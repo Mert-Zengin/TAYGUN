@@ -1,0 +1,32 @@
+# Binaries
+taygun
+taygun.exe
+maskedusuren
+maskedusuren.exe
+/dist/
+/bin/
+
+# Çalıştırma çıktıları
+/dump/
+/taygun_dump/
+/test_ig/
+/dump_indirim/
+*.log
+rapor.json
+report.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+*.test
+*.out
+coverage.txt
+vendor/
