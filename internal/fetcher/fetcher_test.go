@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"sync"
 	"testing"
 	"time"
 
@@ -60,13 +61,16 @@ func TestFetchAll_AppliesProfileURLParams(t *testing.T) {
 		ua    string
 	}
 	gotByUA := map[string]recorded{}
+	var mu sync.Mutex
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
 		gotByUA[r.UserAgent()] = recorded{
 			path:  r.URL.Path,
 			query: r.URL.Query(),
 			ua:    r.UserAgent(),
 		}
+		mu.Unlock()
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte("<html><title>ok</title></html>"))
 	}))
@@ -101,6 +105,8 @@ func TestFetchAll_AppliesProfileURLParams(t *testing.T) {
 		}
 	}
 
+	mu.Lock()
+	defer mu.Unlock()
 	plain := gotByUA["ua-plain"]
 	if plain.path != "/lndirim/urun.php" {
 		t.Fatalf("plain path beklenmedik: %s", plain.path)
